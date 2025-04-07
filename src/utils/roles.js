@@ -6,7 +6,7 @@ import hash from "./hashPass.js";
 
 export const availableRoles = {
     Employee: EmployeeModel,
-    Employer: EmployeeModel,
+    Employer: EmployerModel,
     Company: CompanyModel
 }
 
