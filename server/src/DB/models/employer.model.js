@@ -40,11 +40,6 @@ const employerSchema = new mongoose.Schema({
 
 
 
-employerSchema.pre("save" , function(next) {
-
-    console.log("doc" , this)
-})
-
 const employerModel = mongoose.model("Employer" , employerSchema)
 
 export default employerModel
