@@ -1,5 +1,4 @@
 import React from 'react'
-import header_img_1 from "../../assets/header-1.webp"
 import "./Header.css"
 
 function Header() {
