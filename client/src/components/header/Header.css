@@ -1,0 +1,19 @@
+.header_section {
+    height: 700px;
+    text-align: center;
+    background-color: rgb(190 210 196 / 5)
+}
+.header_section .content h1 {
+    color: rgb(0 4 4 / 52%);
+    font-size: 40px;
+    font-weight: bold;
+}
+.header_section .content p {
+    font-size: 20px;
+    width: 70%;
+    margin: 20px auto;
+}
+form {
+    width: 75%;
+    margin: auto;
+}
