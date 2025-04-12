@@ -24,6 +24,27 @@ export const register = createAsyncThunk("auth/register" , async (credentials , 
 })
 
 
+export const logout = createAsyncThunk("auth/logout" , async (_ , { rejectWithValue }) => {
+    try {
+        const { data } = await axios.get(`${API_URL}/auth/logout` , { withCredentials: true})
+        return data
+
+    }catch(err) {
+        return rejectWithValue(err?.response?.data)
+    }
+})
+
+export const getLoggedInUser = createAsyncThunk("auth/me" , async (_ , { rejectWithValue }) => {
+    try {
+        const { data } = await axios.get(`${API_URL}/auth/me` , { withCredentials: true})
+        return data
+
+    }catch(err) {
+        return rejectWithValue(err?.response?.data)
+    }
+})
+
+
 const auth = createSlice({
     name: "auth",
     initialState: {
@@ -65,6 +86,15 @@ const auth = createSlice({
             state.status = action.payload.status
             state.message = action.payload.message
             state.loading = false
+        })
+        .addCase(logout.fulfilled , (state, action) => {
+            state.user = null
+            state.status = action.payload.status
+            state.message = action.payload.message
+        })
+        .addCase(getLoggedInUser.fulfilled , (state, action) => {
+            state.user = action.payload.data
+            state.status = action.payload.status
         })
     }
 })
