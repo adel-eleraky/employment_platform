@@ -112,7 +112,7 @@ function Register() {
     };
 
     return (
-        <div className="register-page" style={{ marginTop: "150px"}}>
+        <div className="register-page" >
             <div className="container">
 
                 <Formik
@@ -123,7 +123,7 @@ function Register() {
                     {({ values, errors, touched, setFieldValue }) => {
 
                         return (
-                            <Form method="post" className="needs-validation w-75 m-auto p-5 rounded shadow mt-5" noValidate >
+                            <Form method="post" className="needs-validation w-75 m-auto p-5 rounded shadow mt-5 bg-white" noValidate >
                                 <div className="d-flex mb-4 border-bottom position-relative">
                                     <button
                                         type="button"
