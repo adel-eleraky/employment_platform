@@ -1,8 +1,19 @@
 import React from 'react'
 import "./Navbar.css"
 import { Link } from 'react-router'
+import { useDispatch, useSelector } from 'react-redux'
+import axios from 'axios'
+import { logout } from '../../rtk/features/authSlice'
 
 function Navbar() {
+
+    const { user } = useSelector(state => state.auth)
+    const dispatch = useDispatch()
+
+    const handleLogout = () => {
+        dispatch(logout())
+    }
+
     return (
         <>
             <nav>
@@ -29,7 +40,7 @@ function Navbar() {
                             <div className="col-md-8 nav-links-col">
                                 <ul className="nav-links d-flex  m-0 p-0">
                                     <Link to="/" className="nav-link d-flex align-items-center" >
-                                        <i className="fa-solid fa-briefcase" style={{color: "rgba(5, 72, 25, 0.52)"}}></i>
+                                        <i className="fa-solid fa-briefcase" style={{ color: "rgba(5, 72, 25, 0.52)" }}></i>
                                         <li className="mx-3">Jobify</li>
                                     </Link>
                                     <Link to="/jobs" className="nav-link">
@@ -55,9 +66,20 @@ function Navbar() {
                                         <i className="fa-regular fa-user acc_logo fs-3" style={{ color: "#2b373d" }}></i>
                                     </a>
                                     <ul className="dropdown-menu text-center">
-                                        <li><Link className="dropdown-item" to="/login" > Login </Link></li>
-                                        <hr />
-                                        <li><Link className="dropdown-item" to="/register"> Register </Link></li>
+                                        {!user && (
+                                            <>
+                                                <li><Link className="dropdown-item" to="/login" > Login </Link></li>
+                                                <hr />
+                                                <li><Link className="dropdown-item" to="/register"> Register </Link></li>
+                                            </>
+                                        )}
+                                        {user && (
+                                            <>
+                                                <li><Link className="dropdown-item" to={`profile/${user.role}`} > Profile </Link></li>
+                                                <hr />
+                                                <li><Link className="dropdown-item" onClick={handleLogout} > Logout </Link></li>
+                                            </>
+                                        )}
                                     </ul>
                                 </div>
 
