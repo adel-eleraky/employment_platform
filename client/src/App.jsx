@@ -9,10 +9,12 @@ import store from './rtk/Store';
 import Register from './pages/register/Register';
 import UnAuthRoute from './middlewares/UnAuthRoute';
 import ProtectRoute from './middlewares/protectRoute';
-import Profile from './pages/profile/Profile';
 import Layout from './components/layout/Layout';
 import Home from './pages/home/Home';
 import JobList from './pages/jobs/Joblist';
+import EmployeeProfile from './pages/EmployeeProfile/EmployeeProfile';
+import EmployerProfile from './pages/EmployerProfile/EmployerProfile';
+import CreateJob from './pages/EmployerProfile/CreateJob';
 
 function App() {
 
@@ -30,7 +32,13 @@ function App() {
                             </Route>
 
                             <Route element={<ProtectRoute />} >
-                                <Route path="profile" element={<Profile />} />
+                                <Route path='profile' >
+                                    <Route path='Employee' element={<EmployeeProfile />} />
+                                    <Route path='Employer' >
+                                        <Route index element={<EmployerProfile />} />
+                                        <Route path='create-job' element={<CreateJob />} />
+                                    </Route>
+                                </Route>
                             </Route>
 
                             <Route path='jobs' element={<JobList />} />
