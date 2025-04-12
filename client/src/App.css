@@ -3,3 +3,7 @@
   padding: 0;
   box-sizing: border-box;
 }
+#root {
+  padding-top: 150px;
+  background-color: rgb(190 210 196 / 5);
+}
