@@ -7,7 +7,13 @@ function UnAuthRoute() {
     const { user } = useSelector(state => state.auth)
 
     return (
-        user ? <Navigate to="/profile" replace /> :  <Outlet /> 
+        user ?
+            <>
+                {user.role == "Employee" && <Navigate to="profile/Employee" />}
+                {user.role == "Employer" && <Navigate to="profile/Employer" />}
+            </>
+            :
+            <Outlet />
     )
 }
 
