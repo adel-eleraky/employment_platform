@@ -36,7 +36,7 @@ function Login() {
     };
 
     return (
-        <div className="login-page" style={{ marginTop: "150px"}}>
+        <div className="login-page" >
             <div className="container">
                 <Formik
                     initialValues={initialValues}
@@ -45,7 +45,7 @@ function Login() {
                 >
                     {({ values, errors, touched, setFieldValue }) => {
                         return (
-                            <Form method="post" className="needs-validation w-50 m-auto p-5 rounded shadow mt-5" noValidate >
+                            <Form method="post" className="needs-validation w-50 m-auto p-5 rounded shadow mt-5 bg-white" noValidate >
                                 <div className="d-flex mb-4 border-bottom position-relative">
                                     <button
                                         type="button"
