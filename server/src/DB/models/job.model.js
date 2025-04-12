@@ -10,7 +10,8 @@ const jobSchema = new mongoose.Schema({
     },
     location: {
         type: String,
-        required: [true, "location ID is required"]
+        required: [true, "location ID is required"],
+        enum: ["On-Site" , "Remote" , "Hybrid"]
     },
     description: {
         type: String,
@@ -21,6 +22,15 @@ const jobSchema = new mongoose.Schema({
         type: String,
         required: [true, "experience level is required"],
         enum: ["junior" , "mid" , "senior"]
+    },
+    salary: {
+        type: Number,
+        required: [ true , "Salary is required"]
+    },
+    employer: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Employer",
+        required: [ true, "Employer is required"]
     }
 } , { timestamps: true})
 
