@@ -22,7 +22,7 @@ app.use(cookieParser())
 app.use("/api/v1/auth", authRouter)
 app.use("/api/v1/employee", employeeRouter)
 app.use("/api/v1/employer", employerRouter)
-app.use("/api/v1/job", jobRouter)
+app.use("/api/v1/jobs", jobRouter)
 
 app.use(globalError)
 
