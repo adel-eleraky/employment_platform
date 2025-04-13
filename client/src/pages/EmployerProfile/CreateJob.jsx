@@ -1,28 +1,33 @@
-import { ErrorMessage, Field, Form, Formik } from 'formik'
-import React from 'react'
+import { ErrorMessage, Field, FieldArray, Form, Formik } from 'formik'
+import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import * as Yup from "yup"
-import { createJob } from '../../rtk/features/jobSlice'
-import { Navigate } from 'react-router'
+import { createJob, resetJob } from '../../rtk/features/jobSlice'
+import { Navigate, useNavigate } from 'react-router'
 
 function CreateJob() {
 
 
     const dispatch = useDispatch()
-    const { newJob, message } = useSelector(state => state.job)
+    const navigate = useNavigate()
+    const { newJob, message, createLoading, errors: serverErrors } = useSelector(state => state.job)
 
+    console.log("server", serverErrors)
 
-    console.log("new ", newJob)
-    if (newJob) {
-        return <Navigate to=".." state={{ message }} />
-    }
+    useEffect(() => {
+        if (newJob) {
+            dispatch(resetJob())
+            return navigate("..", { state: { message } })
+        }
+    }, [newJob, createLoading])
 
     const initialValues = {
         title: "",
         location: "",
         experience_level: "",
         salary: "",
-        description: ""
+        description: "",
+        skills: []
     }
 
 
@@ -30,6 +35,7 @@ function CreateJob() {
 
         title: Yup.string()
             .min(2, "Minimum length is 2 characters")
+            .matches(/^[A-Za-z0-9+#. ]+$/, "title must only contain letters, numbers, space and specific symbols (+, #, .)")
             .required("Title is required"),
 
         location: Yup.string()
@@ -41,12 +47,19 @@ function CreateJob() {
             .required("experience level is required"),
 
         salary: Yup.number()
-            .min(1, "Enter positive number")
+            .min(50, "minimum is 50")
             .required("Salary is required"),
 
         description: Yup.string()
             .min(16, "Description must be at least 16 characters")
+            .matches(/^[A-Za-z0-9\s.,'"!?()-]+$/, "description must contain only characters and numbers but not #, %, @, /, *")
             .required("Description is required"),
+
+        skills: Yup.array()
+            .min(1, "At least one skill is required")
+            .of(Yup.string()
+                .matches(/^[A-Za-z0-9+#. ]+$/, "skills must only contain letters, numbers, space and specific symbols (+, #, .)")
+                .required())
 
     })
 
@@ -89,6 +102,8 @@ function CreateJob() {
                                                         component="div"
                                                         className="invalid-feedback d-block fs-6 fw-bold"
                                                     />
+                                                    {serverErrors && serverErrors.title && <div className='invalid-feedback d-block fs-6 fw-bold'> {serverErrors?.title} </div>}
+
                                                 </div>
                                             </div>
                                             <div className="col-12 col-md-6">
@@ -105,6 +120,7 @@ function CreateJob() {
                                                         <option value="Hybrid">Hybrid</option>
                                                     </Field>
                                                     <ErrorMessage name="location" component="div" className="invalid-feedback d-block fs-6 fw-bold" />
+                                                    {serverErrors && serverErrors.location && <div className='invalid-feedback d-block fs-6 fw-bold'> {serverErrors?.location} </div>}
                                                 </div>
                                             </div>
                                         </div>
@@ -124,6 +140,7 @@ function CreateJob() {
                                                         <option value="senior">Senior</option>
                                                     </Field>
                                                     <ErrorMessage name="experience_level" component="div" className="invalid-feedback d-block fs-6 fw-bold" />
+                                                    {serverErrors && serverErrors.experience_level && <div className='invalid-feedback d-block fs-6 fw-bold'> {serverErrors?.experience_level} </div>}
                                                 </div>
                                             </div>
                                             <div className="col-12 col-md-6">
@@ -144,6 +161,8 @@ function CreateJob() {
                                                         component="div"
                                                         className="invalid-feedback d-block fs-6 fw-bold"
                                                     />
+                                                    {serverErrors && serverErrors.salary && <div className='invalid-feedback d-block fs-6 fw-bold'> {serverErrors?.salary} </div>}
+
                                                 </div>
                                             </div>
                                         </div>
@@ -158,10 +177,71 @@ function CreateJob() {
                                                         name="description"
                                                         className={`form-control ${touched.description && errors.description && "is-invalid"}`} />
                                                     <ErrorMessage name="description" component="div" className="invalid-feedback d-block fs-6 fw-bold" />
+                                                    {serverErrors && serverErrors.description && <div className='invalid-feedback d-block fs-6 fw-bold'> {serverErrors?.description} </div>}
+
                                                 </div>
                                             </div>
                                         </div>
 
+                                        <div className="row">
+                                            <FieldArray name="skills">
+                                                {({ push, remove, form }) => (
+                                                    <div className="mb-4">
+                                                        <label className="form-label fw-bold mb-3">
+                                                            <i className="bi bi-lightbulb-fill text-success me-2"></i>
+                                                            skills
+                                                        </label>
+                                                        <div className="input-group shadow-sm">
+                                                            <input
+                                                                type="text"
+                                                                className={`form-control ${touched.skills && errors.skills && "is-invalid"}`}
+                                                                placeholder="Type a skill and press Enter to add"
+                                                                onKeyDown={(e) => {
+                                                                    if (e.key === "Enter" && e.target.value.trim()) {
+                                                                        push(e.target.value.trim());
+                                                                        e.target.value = "";
+                                                                        e.preventDefault();
+                                                                    }
+                                                                }}
+                                                            />
+                                                        </div>
+
+                                                        <ErrorMessage
+                                                            name="skills"
+                                                            component="div"
+                                                            className="invalid-feedback d-block fs-6 fw-bold "
+                                                        />
+                                                        {serverErrors && serverErrors.skills && <div className='invalid-feedback d-block fs-6 fw-bold'> {serverErrors?.skills} </div>}
+
+                                                        <div className="skills-container mt-3 p-4 border rounded-3 bg-light shadow-sm">
+                                                            {form.values.skills.length === 0 ? (
+                                                                <div className="text-center py-4">
+                                                                    <i className="bi bi-lightbulb text-muted fs-1 mb-3"></i>
+                                                                    <p className="text-muted mb-0">No skills added yet.</p>
+                                                                </div>
+                                                            ) : (
+                                                                <div className="d-flex flex-wrap gap-2">
+                                                                    {form.values.skills.map((item, index) => (
+                                                                        <span
+                                                                            key={index}
+                                                                            className="badge bg-success py-2 px-3 fs-6 shadow-sm"
+                                                                        >
+                                                                            {item}
+                                                                            <button
+                                                                                type="button"
+                                                                                className="btn-close btn-close-white ms-2"
+                                                                                aria-label="Remove"
+                                                                                onClick={() => remove(index)}
+                                                                            ></button>
+                                                                        </span>
+                                                                    ))}
+                                                                </div>
+                                                            )}
+                                                        </div>
+                                                    </div>
+                                                )}
+                                            </FieldArray>
+                                        </div>
                                         <button
                                             className="text-white submit-btn btn d-block w-50 py-2 mb-4 mx-auto fs-4"
                                             type="submit"
