@@ -27,6 +27,10 @@ const jobSchema = new mongoose.Schema({
         type: Number,
         required: [ true , "Salary is required"]
     },
+    skills: {
+        type: Array,
+        required: [true , "skills is required"]
+    },
     employer: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "Employer",
