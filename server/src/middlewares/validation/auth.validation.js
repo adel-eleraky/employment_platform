@@ -7,23 +7,27 @@ export const registerSchema = Joi.object({
     name: Joi.string()
         .min(3)
         .max(25)
+        .pattern(new RegExp(/^[A-Za-z]+$/))
         .required()
         .messages({
             "any.required": "name is required",
             "string.min": "minimum length is 3 characters",
             "string.max": "max length is 25 characters",
-            "string.empty": "name can't be empty"
+            "string.empty": "name can't be empty",
+            "string.pattern.base": "name must only contain letters"
         })
     ,
 
 
     title: Joi.string()
         .min(2)
+        .pattern(new RegExp(/^[A-Za-z]+$/))
         .required()
         .messages({
             "any.required": "title is required",
             "string.min": "minimum length is 2 characters",
-            "string.empty": "title can't be empty"
+            "string.empty": "title can't be empty",
+            "string.pattern.base": "title must only contain letters"
         })
     ,
 
@@ -98,10 +102,12 @@ export const registerSchema = Joi.object({
 
 
     city: Joi.string()
+        .pattern(new RegExp(/^[A-Za-z]+$/))
         .required()
         .messages({
             "any.required": "city is required",
-            "string.empty": "city can't be empty"
+            "string.empty": "city can't be empty",
+            "string.pattern.base": "city must only contain letters"
         }),
 
 
@@ -118,6 +124,7 @@ export const registerSchema = Joi.object({
 
     bio: Joi.string()
         .min(16)
+        .pattern(new RegExp(/^[A-Za-z0-9\s.,'"!?()-]+$/))
         .when("role", {
             is: "Employee",
             then: Joi.required(),
@@ -126,7 +133,8 @@ export const registerSchema = Joi.object({
         .messages({
             "any.required": "bio is required",
             "string.min": "minimum length is 16 characters",
-            "string.empty": "bio can't be empty"
+            "string.empty": "bio can't be empty",
+            "string.pattern.base": "bio must contain only characters and numbers but not #, %, @, /, *"
         }),
 
 
@@ -145,7 +153,11 @@ export const registerSchema = Joi.object({
 
 
     programming_langs: Joi.array()
-        .items(Joi.string())
+        .items(Joi.string().pattern(new RegExp(/^[A-Za-z0-9+#.]+$/)).required().messages({
+            "string.base": "Each skill must be a string",
+            "string.empty": "programming langs cannot be empty",
+            "string.pattern.base": "Programming languages must only contain letters"
+        }))
         .when("role", {
             is: "Employee",
             then: Joi.required(),
@@ -159,7 +171,8 @@ export const registerSchema = Joi.object({
 
 
     company_name: Joi.string()
-        .min(2)
+        .min(3)
+        .pattern(new RegExp(/^[A-Za-z]+$/))
         .when("role", {
             is: "Employer",
             then: Joi.required(),
@@ -167,13 +180,15 @@ export const registerSchema = Joi.object({
         })
         .messages({
             "any.required": "company name is required",
-            "string.min": "minimum length is 2 characters",
-            "string.empty": "company name can't be empty"
+            "string.min": "minimum length is 3 characters",
+            "string.empty": "company name can't be empty",
+            "string.pattern.base": "company name must only contain letters"
         }),
 
 
     company_location: Joi.string()
         .min(2)
+        .pattern(new RegExp(/^[A-Za-z]+$/))
         .when("role", {
             is: "Employer",
             then: Joi.required(),
@@ -182,7 +197,8 @@ export const registerSchema = Joi.object({
         .messages({
             "any.required": "company location is required",
             "string.min": "minimum length is 2 characters",
-            "string.empty": "company location can't be empty"
+            "string.empty": "company location can't be empty",
+            "string.pattern.base": "company location must only contain letters"
         }),
 })
 
