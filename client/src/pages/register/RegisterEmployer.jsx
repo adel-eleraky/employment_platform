@@ -1,9 +1,11 @@
 import { ErrorMessage, Field, Form, Formik, useFormikContext } from "formik";
 import React from 'react'
+import { useSelector } from "react-redux";
 
-function RegisterEmployer({  touched, errors }) {
+function RegisterEmployer({ touched, errors }) {
 
     const { setFieldValue } = useFormikContext()
+    let { errors: serverErrors } = useSelector(state => state.auth)
 
     return (
         <>
@@ -26,6 +28,8 @@ function RegisterEmployer({  touched, errors }) {
                             component="div"
                             className="invalid-feedback d-block fs-6 fw-bold"
                         />
+                        {serverErrors && serverErrors.company_name && <div className='invalid-feedback d-block fs-6 fw-bold'> {serverErrors?.company_name} </div>}
+
                     </div>
                 </div>
                 <div className="col-12 col-md-6">
@@ -46,6 +50,7 @@ function RegisterEmployer({  touched, errors }) {
                             component="div"
                             className="invalid-feedback d-block fs-6 fw-bold"
                         />
+                        {serverErrors && serverErrors.company_location && <div className='invalid-feedback d-block fs-6 fw-bold'> {serverErrors?.company_location} </div>}
                     </div>
                 </div>
             </div>
