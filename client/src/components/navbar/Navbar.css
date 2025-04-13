@@ -82,3 +82,15 @@ ul {
         display: none !important;
     }
 }
+
+.notification::marker {
+    display: none !important;
+}
+
+.notification .notification-badge::after {
+    display: none !important;
+}
+
+.notification .badge {
+    right: -7px !important;
+}

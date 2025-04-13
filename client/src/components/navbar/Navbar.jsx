@@ -8,11 +8,17 @@ import { logout } from '../../rtk/features/authSlice'
 function Navbar() {
 
     const { user } = useSelector(state => state.auth)
+    const { notifications } = useSelector(state => state.notifications)
     const dispatch = useDispatch()
 
     const handleLogout = () => {
         dispatch(logout())
     }
+
+
+    const unreadNotifications = notifications?.reduce((count, notify) => {
+        return notify.isRead === false ? count + 1 : count;
+    }, 0);
 
     return (
         <>
@@ -54,7 +60,63 @@ function Navbar() {
 
                             </div>
 
-                            <div className="col-4 col-md-2">
+                            <div className="col-4 col-md-2 d-flex justify-content-end">
+
+
+                                {user && (
+                                    <li className="nav-item notification dropdown me-2">
+                                        <a
+                                            className="nav-link dropdown-toggle position-relative notification-badge"
+                                            href="#"
+                                            role="button"
+                                            data-bs-toggle="dropdown"
+                                            aria-expanded="false"
+                                        >
+                                            <i className="fas fa-bell fa-lg fs-4 text-dark"></i>
+                                            <span style={{ right: "-7px !important"}} className="position-absolute  top-0 start-25 translate-middle badge rounded-pill bg-danger">
+                                                {unreadNotifications}
+                                                <span className="visually-hidden">
+                                                    unread notifications
+                                                </span>
+                                            </span>
+                                        </a>
+                                        <ul
+                                            className="dropdown-menu dropdown-menu-end"
+                                            style={{ width: "300px" }}
+                                        >
+                                            <li className="dropdown-item text-muted">
+                                                You have {unreadNotifications} notifications
+                                            </li>
+                                            <li>
+                                                <hr className="dropdown-divider" />
+                                            </li>
+                                            <div
+                                                style={{
+                                                    maxHeight: "500px",
+                                                    overflowY: "auto",
+                                                    paddingRight: "8px",
+                                                }}
+                                            >
+                                                {notifications.length !== 0 &&
+                                                    [...notifications]?.reverse().map((notify) => {
+                                                        return (
+                                                            <React.Fragment key={notify._id}>
+                                                                <li
+                                                                    className="dropdown-item"
+                                                                    style={{ whiteSpace: "normal" }}
+                                                                >
+
+                                                                    {notify?.message}
+                                                                </li>
+                                                                <hr />
+                                                            </React.Fragment>
+                                                        );
+                                                    })}
+                                            </div>
+
+                                        </ul>
+                                    </li>
+                                )}
 
                                 <div className="dropdown d-flex justify-content-end">
                                     <a
