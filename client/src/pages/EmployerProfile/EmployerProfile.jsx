@@ -16,30 +16,19 @@ function EmployerProfile() {
 
     useEffect(() => {
         if (message) {
-            toast.success(`${message}`, {
-                position: "top-center",
-                autoClose: 5000,
-                hideProgressBar: false,
-                closeOnClick: false,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-                theme: "light",
-            });
+            toast.success(`${message}`);
 
             message = ""
         }
     }, [message]);
 
 
-    console.log("jobs", employerJobs)
-
     const JobCards = employerJobs && employerJobs.map(job => {
 
-        const { title, description, experience_level, location, salary, createdAt } = job
+        const {_id , title, description, experience_level, location, salary, createdAt , skills } = job
 
         return (
-            <div key={job._id} className="col-12 col-md-6 col-lg-4">
+            <div key={_id} className="col-12 col-md-6 col-lg-4">
                 <div className='job_card mb-4 py-3 px-4 border bg-white rounded'>
                     <div className="title fw-bold fs-4 mb-3"> {title} </div>
                     <div className="details mb-3">
@@ -61,12 +50,19 @@ function EmployerProfile() {
                         <div className="description mb-3">
                             {description}
                         </div>
+                        <div className="skills d-flex gap-2 mb-3 flex-wrap">
+                            {skills.map((skill , index) => {
+                                return (
+                                    <div key={index} className='rounded-pill py-1 px-3 text-white' style={{ backgroundColor: "rgba(5, 72, 25, 0.52)" }}> {skill} </div>
+                                )
+                            })}
+                        </div>
                         <div className="employer d-flex align-items-center justify-content-between">
                             {/* <div> Posted By:  <span className='name'> {employer.name} </span> </div> */}
                             <div className="post_date"> Date: {formatDate(createdAt)} </div>
                         </div>
                     </div>
-                    <button className='btn d-block w-100 fw-bold text-white' style={{ backgroundColor: "rgba(5, 72, 25, 0.52)" }}> View Proposals </button>
+                    <Link to={`proposals/${_id}`} className='btn d-block w-100 fw-bold text-white' style={{ backgroundColor: "rgba(5, 72, 25, 0.52)" }}> View Proposals </Link>
                 </div>
             </div>
         )
