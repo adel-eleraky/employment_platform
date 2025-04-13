@@ -69,7 +69,15 @@ const job = createSlice({
         newJob: null,
         employerJobs: null,
         applyMessage: "",
-        appliedJobs: []
+        applyLoading: false,
+        appliedJobs: [],
+        createLoading: false
+    },
+    reducers: {
+        resetJob: (state) => {
+            state.newJob = null;
+            state.message = "";
+        }
     },
     extraReducers: (builder) => {
         builder
@@ -84,39 +92,43 @@ const job = createSlice({
                 state.loading = false
             })
             .addCase(createJob.pending, (state, action) => {
-                state.loading = true
+                state.createLoading = true
                 state.errors = null
             })
             .addCase(createJob.fulfilled, (state, action) => {
                 state.newJob = action.payload.data
                 state.status = action.payload.status
                 state.message = action.payload.message
-                state.loading = false
+                state.createLoading = false
             })
             .addCase(createJob.rejected, (state, action) => {
                 state.errors = action.payload.errors
                 state.status = action.payload.status
                 state.message = action.payload.message
-                state.loading = false
+                state.createLoading = false
             })
             .addCase(getEmployerJobs.fulfilled, (state, action) => {
                 state.employerJobs = action.payload.data
                 state.status = action.payload.status
             })
+            .addCase(applyForJob.pending, (state, action) => {
+                state.applyLoading = true
+            })
             .addCase(applyForJob.fulfilled, (state, action) => {
+                state.applyLoading = false
                 state.status = action.payload.status
                 state.applyMessage = action.payload.message
                 state.data = action.payload.data
-                // state.appliedJobs.push(action.payload.data.job)
             })
             .addCase(getAppliedJobs.fulfilled, (state, action) => {
 
                 state.appliedJobs = action.payload.data
-                // action.payload.data.map(job => {
-                //     state.appliedJobs.push(job.job)
-                // })
+            })
+            .addCase(getAppliedJobs.rejected, (state, action) => {
+                state.appliedJobs = []
             })
     }
 })
 
 export default job.reducer
+export const { resetJob } = job.actions
