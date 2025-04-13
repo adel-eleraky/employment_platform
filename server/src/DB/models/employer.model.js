@@ -25,7 +25,8 @@ const employerSchema = new mongoose.Schema({
     },
     password: {
         type: String,
-        minLength: [8, "minimum length is 8"]
+        minLength: [8, "minimum length is 8"],
+        select: false
     },
     city: {
         type: String,
