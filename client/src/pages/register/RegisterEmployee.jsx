@@ -1,9 +1,12 @@
 import React, { useState } from 'react'
 import { ErrorMessage, Field, FieldArray, Form, Formik, useFormikContext } from "formik";
+import { useSelector } from 'react-redux';
 
 function RegisterEmployee({ values, touched, errors }) {
 
     const { setFieldValue } = useFormikContext()
+    let { errors: serverErrors } = useSelector(state => state.auth)
+
 
     return (
         <>
@@ -17,6 +20,7 @@ function RegisterEmployee({ values, touched, errors }) {
                             name="bio"
                             className={`form-control ${touched.bio && errors.bio && "is-invalid"}`} />
                         <ErrorMessage name="bio" component="div" className="invalid-feedback d-block fs-6 fw-bold" />
+                        {serverErrors && serverErrors.bio && <div className='invalid-feedback d-block fs-6 fw-bold'> {serverErrors?.bio} </div>}
                     </div>
                 </div>
                 <div className="col-12 col-md-6">
@@ -33,6 +37,7 @@ function RegisterEmployee({ values, touched, errors }) {
                             <option value="senior">Senior</option>
                         </Field>
                         <ErrorMessage name="experience_level" component="div" className="invalid-feedback d-block fs-6 fw-bold" />
+                        {serverErrors && serverErrors.experience_level && <div className='invalid-feedback d-block fs-6 fw-bold'> {serverErrors?.experience_level} </div>}
                     </div>
                 </div>
             </div>
@@ -67,6 +72,7 @@ function RegisterEmployee({ values, touched, errors }) {
                                     component="div"
                                     className="invalid-feedback d-block fs-6 fw-bold "
                                 />
+                                {serverErrors && serverErrors.programming_langs && <div className='invalid-feedback d-block fs-6 fw-bold'> {serverErrors?.programming_langs} </div>}
 
                                 <div className="programming_langs-container mt-3 p-4 border rounded-3 bg-light shadow-sm">
                                     {form.values.programming_langs.length === 0 ? (
