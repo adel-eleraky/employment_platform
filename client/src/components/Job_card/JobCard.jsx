@@ -2,17 +2,18 @@ import React, { useEffect, useRef } from 'react'
 import "./JobCard.css"
 import formatDate from '../../utils/date'
 import { useDispatch, useSelector } from 'react-redux'
-import { applyForJob } from '../../rtk/features/jobSlice'
-import { useNavigate } from 'react-router'
+import { applyForJob, getAppliedJobs } from '../../rtk/features/jobSlice'
+import { useLocation, useNavigate } from 'react-router'
 import { toast } from 'react-toastify'
 
-function JobCard({ job }) {
+function JobCard({ job, status }) {
 
-    const { _id, title, description, salary, location, experience_level, createdAt, employer } = job
+    const { _id, title, description, salary, location, experience_level, createdAt, skills, employer } = job
     const { user } = useSelector(state => state.auth)
     const navigate = useNavigate()
-    let { applyMessage, appliedJobs } = useSelector(state => state.job)
+    let { applyMessage, applyLoading, appliedJobs } = useSelector(state => state.job)
     const dispatch = useDispatch()
+    const { pathname } = useLocation()
 
     const handleApply = (id) => {
 
@@ -30,6 +31,21 @@ function JobCard({ job }) {
         apply => apply.job?._id == _id
     );
 
+    const isAccepted = appliedJobs.length > 0 && appliedJobs.some(
+        apply => apply.status == "accepted" && apply.job?._id == _id
+    )
+
+    const isRejected = appliedJobs.length > 0 && appliedJobs.some(
+        apply => apply.status == "rejected" && apply.job?._id == _id
+    )
+
+    const isPending = appliedJobs.length > 0 && appliedJobs.some(
+        apply => apply.status == "pending" && apply.job?._id == _id
+    )
+
+    useEffect(() => {
+        dispatch(getAppliedJobs())
+    }, [applyLoading])
 
     return (
         <div className='job_card mb-4 py-3 px-4 border bg-white rounded'>
@@ -53,18 +69,46 @@ function JobCard({ job }) {
                 <div className="description mb-3">
                     {description}
                 </div>
+                <div className="skills d-flex flex-wrap gap-2 mb-3">
+                    {skills?.map((skill, index) => {
+                        return (
+                            <div key={index} className='rounded-pill py-1 px-3 text-white' style={{ backgroundColor: "rgba(5, 72, 25, 0.52)" }}> {skill} </div>
+                        )
+                    })}
+                </div>
                 <div className="employer d-flex align-items-center justify-content-between">
-                    <div> Posted By:  <span className='name'> {employer.name} </span> </div>
+                    <div> Posted By:  <span className='name'> {employer?.name} </span> </div>
                     <div className="post_date"> Date: {formatDate(createdAt)} </div>
                 </div>
             </div>
-            <button
-                onClick={() => handleApply(_id)}
-                className='btn d-block w-100 fw-bold text-white'
-                style={{ backgroundColor: "rgba(5, 72, 25, 0.52)" , opacity: isApplied ? ".5" : "1" }}
-            >
-                {isApplied ? "Application submitted" : "Apply"}
-            </button>
+
+            {
+                isAccepted ? (
+                    <button className='btn btn-success d-block w-100'>Accepted</button>
+                ) : isRejected ? (
+                    <button className='btn btn-danger d-block w-100'>Rejected</button>
+                ) : isPending ? (
+                    <button
+                        onClick={() => handleApply(_id)}
+                        disabled={isApplied}
+                        className='btn d-block w-100 fw-bold text-white'
+                        style={{ backgroundColor: "rgba(5, 72, 25, 0.52)", opacity: isApplied ? ".5" : "1" }}
+                    >
+                        {isApplied ? "Waiting for Response" : "Apply"}
+                    </button>
+                ) : (
+                    <button
+                        onClick={() => handleApply(_id)}
+                        disabled={isApplied}
+                        className='btn d-block w-100 fw-bold text-white'
+                        style={{ backgroundColor: "rgba(5, 72, 25, 0.52)", opacity: isApplied ? ".5" : "1" }}
+                    >
+                        {isApplied ? "Waiting for Response" : "Apply"}
+                    </button>
+                )
+            }
+            
+
         </div>
     )
 }
