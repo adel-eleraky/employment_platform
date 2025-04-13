@@ -15,6 +15,7 @@ import JobList from './pages/jobs/Joblist';
 import EmployeeProfile from './pages/EmployeeProfile/EmployeeProfile';
 import EmployerProfile from './pages/EmployerProfile/EmployerProfile';
 import CreateJob from './pages/EmployerProfile/CreateJob';
+import Proposals from './pages/EmployerProfile/Proposals';
 
 function App() {
 
@@ -37,6 +38,7 @@ function App() {
                                     <Route path='Employer' >
                                         <Route index element={<EmployerProfile />} />
                                         <Route path='create-job' element={<CreateJob />} />
+                                        <Route path='proposals/:jobId' element={<Proposals />} />
                                     </Route>
                                 </Route>
                             </Route>
