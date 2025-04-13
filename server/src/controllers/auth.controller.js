@@ -11,7 +11,7 @@ export const register = asyncHandler(async (req, res, next) => {
     let roleClass = new Roles[role](req.body)
     let newUser = await roleClass.create()
 
-    const token = jwt.sign({ id: user.id , email: newUser.email, role }, process.env.JWT_SECRET, { expiresIn: "90d" })
+    const token = jwt.sign({ id: newUser.id , email: newUser.email, role }, process.env.JWT_SECRET, { expiresIn: "90d" })
     saveTokenInCookie(res, token)
 
     const UserObject = newUser.toObject()
@@ -29,7 +29,7 @@ export const login = asyncHandler(async (req, res, next) => {
 
     const { role, email, password } = req.body
 
-    const user = await Roles.availableRoles[role].findOne({ email })
+    const user = await Roles.availableRoles[role].findOne({ email }).select("+password")
 
     if (!user) {
         return res.status(404).json({
