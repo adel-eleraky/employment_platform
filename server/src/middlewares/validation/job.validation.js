@@ -5,10 +5,12 @@ export const createJobSchema = Joi.object({
 
     title: Joi.string()
         .min(2)
+        .pattern(new RegExp(/^[A-Za-z0-9+#. ]+$/))
         .required()
         .messages({
             'string.min': 'Minimum length is 2 characters',
-            'any.required': 'Title is required'
+            'any.required': 'Title is required',
+            "string.pattern.base": "title must only contain letters, numbers, space and specific symbols (+, #, .)"
         }),
 
     location: Joi.string()
@@ -28,19 +30,31 @@ export const createJobSchema = Joi.object({
         }),
 
     salary: Joi.number()
-        .min(1)
+        .min(50)
         .required()
         .messages({
-            'number.min': 'Enter positive number',
+            'number.min': 'minimum is 50',
             'any.required': 'Salary is required'
         }),
 
     description: Joi.string()
         .min(16)
+        .pattern(new RegExp(/^[A-Za-z0-9\s.,'"!?()-]+$/))
         .required()
         .messages({
             'string.min': 'Description must be at least 16 characters',
-            'any.required': 'Description is required'
+            'any.required': 'Description is required',
+            "string.pattern.base": "bio must contain only characters and numbers but not #, %, @, /, *"
+        }),
+
+    skills: Joi.array()
+        .items(Joi.string().pattern(new RegExp(/^[A-Za-z0-9+#.]+$/)).required())
+        .min(1)
+        .required()
+        .messages({
+            "any.required": "Skills is required",
+            "array.base": "Skills must be an array",
+            "array.min": "At least one skill is required",
         })
 });
 
