@@ -36,7 +36,7 @@ function Login() {
     };
 
     return (
-        <div className="login-page" >
+        <div className="login-page" style={{ paddingBottom: "110px"}} >
             <div className="container">
                 <Formik
                     initialValues={initialValues}

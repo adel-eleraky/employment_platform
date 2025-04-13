@@ -34,10 +34,12 @@ function Register() {
         name: Yup.string()
             .min(3, "Minimum length is 3 characters")
             .max(25, "Maximum length is 25 characters")
+            .matches(/^[A-Za-z]+$/, "name must only contain letters")
             .required("Name is required"),
 
         title: Yup.string()
             .min(2, "Minimum length is 2 characters")
+            .matches(/^[A-Za-z]+$/, "title must only contain letters")
             .required("Title is required"),
 
         email: Yup.string()
@@ -59,7 +61,9 @@ function Register() {
             .matches(/^[0-9]{14}$/, "National ID must be 14 digits")
             .required("National ID is required"),
 
-        city: Yup.string().required("City is required"),
+        city: Yup.string()
+            .min(2, "Minimum length is 2 characters")
+            .matches(/^[A-Za-z]+$/, "city must only contain letters").required("City is required"),
 
         role: Yup.string().oneOf(["Employee", "Employer"]).required("Role is required"),
 
@@ -69,17 +73,23 @@ function Register() {
     if (role == "Employee") {
         validationSchema = validationSchema.concat(
             Yup.object().shape({
+
                 bio: Yup.string()
                     .min(16, "Bio must be at least 16 characters")
+                    .matches(/^[A-Za-z0-9\s.,'"!?()-]+$/, "bio must contain only characters and numbers but not #, %, @, /, *")
                     .required("Bio is required"),
 
                 experience_level: Yup.string()
                     .oneOf(["junior", "mid", "senior"])
-                    .required("experience level is required"),
+                    .required("Experience level is required"),
 
                 programming_langs: Yup.array()
                     .min(1, "At least one programming language is required")
-                    .of(Yup.string().required())
+                    .of(
+                        Yup.string()
+                            .matches(/^[A-Za-z0-9+#. ]+$/, "skills must only contain letters, numbers, space and specific symbols (+, #, .)")
+                            .required()
+                    )
             })
         )
     }
@@ -88,11 +98,13 @@ function Register() {
         validationSchema = validationSchema.concat(
             Yup.object().shape({
                 company_name: Yup.string()
-                    .min(2, "Company name must be at least 2 characters")
+                    .min(3, "Company name must be at least 2 characters")
+                    .matches(/^[A-Za-z]+$/, "company name must only contain letters")
                     .required("company name is required"),
 
                 company_location: Yup.string()
                     .min(2, "Company location must be at least 2 characters")
+                    .matches(/^[A-Za-z]+$/, "company location must only contain letters")
                     .required("company location is required")
             })
         )
@@ -102,17 +114,17 @@ function Register() {
         if (values.role === "Employee") {
             delete values.company_name;
             delete values.company_location;
-        } else if(values.role = "Employer") {
+        } else if (values.role = "Employer") {
             delete values.bio;
-            delete values.experience_level;
             delete values.programming_langs;
+            delete values.experience_level;
         }
         console.log(values)
         dispatch(register(values))
     };
 
     return (
-        <div className="register-page" >
+        <div className="register-page" style={{ paddingBottom: "30px" }}>
             <div className="container">
 
                 <Formik
@@ -166,6 +178,8 @@ function Register() {
                                                 component="div"
                                                 className="invalid-feedback d-block fs-6 fw-bold"
                                             />
+                                            {serverErrors && serverErrors.name && <div className='invalid-feedback d-block fs-6 fw-bold'> {serverErrors?.name} </div>}
+
                                         </div>
                                     </div>
                                     <div className="col-12 col-md-6">
@@ -186,6 +200,7 @@ function Register() {
                                                 component="div"
                                                 className="invalid-feedback d-block fs-6 fw-bold"
                                             />
+                                            {serverErrors && serverErrors.title && <div className='invalid-feedback d-block fs-6 fw-bold'> {serverErrors?.title} </div>}
                                         </div>
                                     </div>
                                 </div>
@@ -230,6 +245,7 @@ function Register() {
                                                 component="div"
                                                 className="invalid-feedback d-block fs-6 fw-bold"
                                             />
+                                            {serverErrors && serverErrors.city && <div className='invalid-feedback d-block fs-6 fw-bold'> {serverErrors?.city} </div>}
                                         </div>
                                     </div>
                                 </div>
@@ -287,6 +303,7 @@ function Register() {
                                                 component="div"
                                                 className="invalid-feedback d-block fs-6 fw-bold"
                                             />
+                                            {serverErrors && serverErrors.password && <div className='invalid-feedback d-block fs-6 fw-bold'> {serverErrors?.password} </div>}
                                         </div>
                                     </div>
                                     <div className="col-16 col-md-6">
@@ -314,6 +331,7 @@ function Register() {
                                                 component="div"
                                                 className="invalid-feedback d-block fs-6 fw-bold"
                                             />
+                                            {serverErrors && serverErrors.confirmPassword && <div className='invalid-feedback d-block fs-6 fw-bold'> {serverErrors?.confirmPassword} </div>}
                                         </div>
                                     </div>
                                 </div>
